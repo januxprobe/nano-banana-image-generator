@@ -1,0 +1,50 @@
+.model-switcher {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    width: fit-content;
+}
+
+.model-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    transition: color 0.2s;
+}
+
+.model-label.active {
+    color: var(--color-text);
+}
+
+.switch-track {
+    width: 48px;
+    height: 24px;
+    background-color: var(--color-surface-hover);
+    border-radius: 12px;
+    position: relative;
+    transition: background-color 0.3s;
+}
+
+.switch-track.pro {
+    background-color: var(--color-primary);
+}
+
+.switch-thumb {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.switch-track.pro .switch-thumb {
+    transform: translateX(24px);
+}
