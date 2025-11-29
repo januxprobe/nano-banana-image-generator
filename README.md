@@ -55,3 +55,9 @@ A powerful web application designed to generate high-fidelity prompts for the Na
 ## License
 
 This project is licensed under the MIT License.
+
+## Acknowledgements
+
+This application is based on the curated prompts and information from the [Awesome Nano Banana Pro](https://github.com/ZeroLu/awesome-nanobanana-pro) repository.
+
+A huge thanks to **[ZeroLu](https://github.com/ZeroLu)** for building and maintaining this incredible library of prompts and resources! 🍌
