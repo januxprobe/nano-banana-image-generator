@@ -53,15 +53,11 @@ const GeneratorView = ({ item, isPro }) => {
     };
 
 
+
     const generateImage = async () => {
         const prompt = generatePrompt();
         setIsGeneratingImage(true);
         setImageUrl('');
-
-        // Only use Gemini for Standard model for now
-        if (isPro) {
-            alert("Pro model image generation coming soon! Using Standard model for now.");
-        }
 
         try {
             const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -70,10 +66,13 @@ const GeneratorView = ({ item, isPro }) => {
             }
 
             const genAI = new GoogleGenerativeAI(apiKey);
-            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
+
+            // Select model based on Pro mode
+            const modelName = isPro ? "gemini-3-pro-image-preview" : "gemini-2.5-flash-image";
+            console.log(`Using model: ${modelName}`);
+            const model = genAI.getGenerativeModel({ model: modelName });
 
             // Generate content with the prompt
-            // The gemini-2.5-flash-image model can generate images from text
             const result = await model.generateContent(prompt);
 
             console.log("Full API result:", result);
