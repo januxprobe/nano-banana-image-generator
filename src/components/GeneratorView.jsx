@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import './GeneratorView.css';
 
 const GeneratorView = ({ item, isPro }) => {
@@ -6,6 +7,8 @@ const GeneratorView = ({ item, isPro }) => {
     const [generatedPrompt, setGeneratedPrompt] = useState('');
     const [showPrompt, setShowPrompt] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [imageUrl, setImageUrl] = useState('');
+    const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
     // Reset form when item changes
     useEffect(() => {
@@ -17,6 +20,8 @@ const GeneratorView = ({ item, isPro }) => {
         setGeneratedPrompt('');
         setShowPrompt(false);
         setCopied(false);
+        setImageUrl('');
+        setIsGeneratingImage(false);
     }, [item]);
 
     const handleInputChange = (name, value) => {
@@ -44,6 +49,84 @@ const GeneratorView = ({ item, isPro }) => {
         setGeneratedPrompt(prompt);
         setShowPrompt(true);
         setCopied(false);
+        return prompt; // Return for image generation
+    };
+
+
+    const generateImage = async () => {
+        const prompt = generatePrompt();
+        setIsGeneratingImage(true);
+        setImageUrl('');
+
+        // Only use Gemini for Standard model for now
+        if (isPro) {
+            alert("Pro model image generation coming soon! Using Standard model for now.");
+        }
+
+        try {
+            const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+            if (!apiKey) {
+                throw new Error("API Key not found. Please check your .env file.");
+            }
+
+            const genAI = new GoogleGenerativeAI(apiKey);
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
+
+            // Generate content with the prompt
+            // The gemini-2.5-flash-image model can generate images from text
+            const result = await model.generateContent(prompt);
+
+            console.log("Full API result:", result);
+            const response = result.response;
+            console.log("Response object:", response);
+            console.log("Response text:", response.text());
+
+            // Check if the response contains image data
+            // The response might contain inline data or a URL
+            if (response.candidates && response.candidates[0]) {
+                const candidate = response.candidates[0];
+                console.log("Candidate:", candidate);
+
+                // Check for safety blocks
+                if (candidate.finishReason === 'SAFETY') {
+                    const textResponse = candidate.content?.parts?.[0]?.text || "Safety filters triggered";
+                    throw new Error(`Image generation blocked by safety filters: ${textResponse}`);
+                }
+
+                // Look for inline image data in the response
+                if (candidate.content && candidate.content.parts) {
+                    console.log("Parts:", candidate.content.parts);
+                    console.log("Parts JSON:", JSON.stringify(candidate.content.parts, null, 2));
+                    for (const part of candidate.content.parts) {
+                        console.log("Checking part:", JSON.stringify(part, null, 2));
+                        if (part.inlineData && part.inlineData.mimeType && part.inlineData.mimeType.startsWith('image/')) {
+                            // Found an image! Convert base64 to data URL
+                            const base64Data = part.inlineData.data;
+                            const mimeType = part.inlineData.mimeType;
+                            const dataUrl = `data:${mimeType};base64,${base64Data}`;
+                            setImageUrl(dataUrl);
+                            setIsGeneratingImage(false);
+                            return;
+                        }
+                    }
+
+                    // If we get here, check if it's a text response
+                    const textPart = candidate.content.parts.find(p => p.text);
+                    if (textPart) {
+                        throw new Error(`Model returned text instead of image: "${textPart.text}"`);
+                    }
+                }
+            }
+
+            // If no image was found in the response, throw an error
+            throw new Error("No image was generated. The model may have returned an unexpected response. Check console for details.");
+
+        } catch (error) {
+            console.error("Error generating image:", error);
+            console.error("Error stack:", error.stack);
+            alert("Failed to generate image: " + error.message);
+            setIsGeneratingImage(false);
+        }
     };
 
     const copyToClipboard = () => {
@@ -84,9 +167,14 @@ const GeneratorView = ({ item, isPro }) => {
                         </div>
                     ))}
 
-                    <button className="generate-btn" onClick={generatePrompt}>
-                        Generate Prompt 🍌
-                    </button>
+                    <div className="button-group">
+                        <button className="generate-btn" onClick={generatePrompt}>
+                            Generate Prompt 🍌
+                        </button>
+                        <button className="generate-image-btn" onClick={generateImage}>
+                            Generate Image 🎨
+                        </button>
+                    </div>
                 </div>
 
                 {showPrompt && (
@@ -102,6 +190,22 @@ const GeneratorView = ({ item, isPro }) => {
                         </div>
                         <div className="prompt-display">
                             <pre>{generatedPrompt}</pre>
+                        </div>
+                    </div>
+                )}
+
+                {imageUrl && (
+                    <div className="image-section">
+                        <h3>Generated Preview</h3>
+                        <div className="image-container">
+                            {isGeneratingImage && <div className="loading-spinner">Generating...</div>}
+                            <img
+                                src={imageUrl}
+                                alt="Generated result"
+                                onLoad={() => setIsGeneratingImage(false)}
+                                onError={() => setIsGeneratingImage(false)}
+                                style={{ display: isGeneratingImage ? 'none' : 'block' }}
+                            />
                         </div>
                     </div>
                 )}
