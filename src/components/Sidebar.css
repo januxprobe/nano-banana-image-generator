@@ -1,7 +1,7 @@
 .sidebar {
     width: 280px;
     height: 100vh;
-    background-color: var(--color-surface);
+    background-color: var(--color-bg);
     border-right: 1px solid var(--color-border);
     display: flex;
     flex-direction: column;
@@ -9,11 +9,17 @@
     left: 0;
     top: 0;
     overflow-y: auto;
+    z-index: 50;
 }
 
 .sidebar-header {
-    padding: var(--spacing-lg);
-    border-bottom: 1px solid var(--color-border);
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+    position: sticky;
+    top: 0;
+    background-color: var(--color-bg);
+    z-index: 10;
+    /* backdrop-filter: blur(10px); */
+    /* Optional: if we want glass effect */
 }
 
 .sidebar-header h1 {
@@ -21,13 +27,15 @@
     font-weight: 700;
     color: var(--color-primary);
     margin-bottom: var(--spacing-xs);
+    letter-spacing: -0.5px;
 }
 
 .subtitle {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--color-text-secondary);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    font-weight: 600;
 }
 
 .sidebar-nav {
@@ -36,7 +44,7 @@
 }
 
 .category-group {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
 }
 
 .category-header {
@@ -44,13 +52,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-sm) 0;
-    color: var(--color-text-secondary);
-    font-size: 12px;
+    padding: var(--spacing-sm) var(--spacing-xs);
+    color: var(--color-text-tertiary);
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: color 0.2s;
+    letter-spacing: 1px;
+    transition: color var(--transition-fast);
+    cursor: pointer;
 }
 
 .category-header:hover {
@@ -59,7 +68,8 @@
 
 .arrow {
     font-size: 10px;
-    transition: transform 0.2s;
+    transition: transform var(--transition-fast);
+    opacity: 0.7;
 }
 
 .arrow.expanded {
@@ -69,26 +79,44 @@
 .category-items {
     list-style: none;
     margin-top: var(--spacing-xs);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .item-button {
     width: 100%;
     text-align: left;
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: 10px 12px;
     border-radius: var(--radius-sm);
-    color: var(--color-text);
+    color: var(--color-text-secondary);
     font-size: 14px;
-    transition: all 0.2s;
-    margin-bottom: 2px;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
 }
 
 .item-button:hover {
-    background-color: var(--color-surface-hover);
+    background-color: var(--color-surface);
+    color: var(--color-text);
 }
 
 .item-button.active {
+    background-color: var(--color-surface-active);
+    color: var(--color-text);
+    border-color: var(--color-border);
+    /* Optional: Add a subtle left border or indicator */
+    position: relative;
+}
+
+.item-button.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 16px;
     background-color: var(--color-primary);
-    color: #000;
-    /* Contrast text for yellow background */
-    font-weight: 600;
+    border-radius: 0 4px 4px 0;
 }

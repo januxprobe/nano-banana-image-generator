@@ -1,24 +1,57 @@
 :root {
-  --color-bg: #0f0f11;
-  --color-surface: #1c1c1e;
-  --color-surface-hover: #2c2c2e;
-  --color-primary: #FFE600; /* Banana Yellow */
-  --color-primary-hover: #E6CF00;
-  --color-text: #ffffff;
-  --color-text-secondary: #8e8e93;
-  --color-border: #38383a;
-  
-  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  
+  /* Premium Dark Theme Palette */
+  --color-bg: #09090b;
+  /* Darker, richer black */
+  --color-surface: #18181b;
+  /* Zinc-900 */
+  --color-surface-hover: #27272a;
+  /* Zinc-800 */
+  --color-surface-active: #3f3f46;
+  /* Zinc-700 */
+
+  --color-primary: #FACC15;
+  /* Yellow-400 - More vibrant */
+  --color-primary-hover: #EAB308;
+  /* Yellow-500 */
+  --color-primary-dim: rgba(250, 204, 21, 0.1);
+
+  --color-text: #FAFAFA;
+  /* Zinc-50 */
+  --color-text-secondary: #A1A1AA;
+  /* Zinc-400 */
+  --color-text-tertiary: #71717A;
+  /* Zinc-500 */
+
+  --color-border: #27272a;
+  /* Zinc-800 */
+  --color-border-hover: #3f3f46;
+  /* Zinc-700 */
+
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+  /* Spacing System */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
-  
-  --radius-sm: 8px;
+  --spacing-2xl: 48px;
+
+  /* Radius */
+  --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-glow: 0 0 20px rgba(250, 204, 21, 0.15);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -32,7 +65,9 @@ body {
   color: var(--color-text);
   font-family: var(--font-family);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  line-height: 1.5;
 }
 
 button {
@@ -40,39 +75,57 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  transition: var(--transition-fast);
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   font-family: inherit;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   color: var(--color-text);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
   width: 100%;
   font-size: 14px;
+  transition: var(--transition-fast);
 }
 
-input:focus, textarea:focus, select:focus {
-  outline: 2px solid var(--color-primary);
-  border-color: transparent;
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: var(--color-border-hover);
 }
 
-/* Scrollbar */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-dim);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-bg);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-surface-hover);
-  border-radius: 4px;
+  background: var(--color-surface-active);
+  border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-border);
+  background: var(--color-text-tertiary);
 }
