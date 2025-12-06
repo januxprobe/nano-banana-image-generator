@@ -419,5 +419,21 @@ export const categories = [
         ]
       }
     ]
+  },
+  {
+    id: 'wallpapers',
+    title: 'Wallpapers & Backgrounds',
+    description: 'Aesthetic wallpapers for mobile and desktop.',
+    items: [
+      {
+        id: 'animal-wallpaper',
+        title: 'Cute Animal Wallpaper',
+        description: 'Curious animals looking down at the screen.',
+        template: "iphone wallpaper with 10 cute [animal_name] curiously looking down at the screen directly at the camera, camera pointing up at the sky --ar 9:16",
+        inputs: [
+          { name: 'animal_name', label: 'Animal Name', type: 'text', placeholder: 'cats' }
+        ]
+      }
+    ]
   }
 ];
