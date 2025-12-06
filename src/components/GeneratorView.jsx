@@ -43,7 +43,7 @@ const GeneratorView = ({ item, isPro }) => {
 
         // Add Pro model specifics if enabled
         if (isPro) {
-            prompt = `Nano Banana Pro: ${prompt} --v 6.0 --style raw`;
+            prompt = `${prompt} --v 6.0 --style raw`;
         }
 
         setGeneratedPrompt(prompt);
