@@ -1,0 +1,73 @@
+.peeling-banana-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.banana-container {
+  width: 80px;
+  height: 80px;
+  animation: bounce 1s infinite alternate ease-in-out;
+}
+
+.banana-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+}
+
+.peel {
+  transform-origin: 50% 30px;
+}
+
+.peel-left {
+  animation: peel-left-anim 1.5s infinite ease-in-out;
+}
+
+.peel-right {
+  animation: peel-right-anim 1.5s infinite ease-in-out;
+}
+
+.peel-center {
+  animation: peel-center-anim 1.5s infinite ease-in-out;
+}
+
+@keyframes peel-left-anim {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-35deg) translateX(-5px); }
+}
+
+@keyframes peel-right-anim {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(35deg) translateX(5px); }
+}
+
+@keyframes peel-center-anim {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.7) translateY(-5px); }
+}
+
+@keyframes bounce {
+  from { transform: translateY(0) rotate(-5deg); }
+  to { transform: translateY(-10px) rotate(5deg); }
+}
+
+.loading-text {
+  margin-top: 15px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FCD34D; /* Warm yellow */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}

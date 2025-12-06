@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import PeelingBananaLoader from './PeelingBananaLoader';
 import './GeneratorView.css';
 
 const GeneratorView = ({ item, isPro }) => {
@@ -193,18 +194,19 @@ const GeneratorView = ({ item, isPro }) => {
                     </div>
                 )}
 
-                {imageUrl && (
+                {(imageUrl || isGeneratingImage) && (
                     <div className="image-section">
                         <h3>Generated Preview</h3>
                         <div className="image-container">
-                            {isGeneratingImage && <div className="loading-spinner">Generating...</div>}
-                            <img
-                                src={imageUrl}
-                                alt="Generated result"
-                                onLoad={() => setIsGeneratingImage(false)}
-                                onError={() => setIsGeneratingImage(false)}
-                                style={{ display: isGeneratingImage ? 'none' : 'block' }}
-                            />
+                            {isGeneratingImage ? (
+                                <PeelingBananaLoader />
+                            ) : (
+                                <img
+                                    src={imageUrl}
+                                    alt="Generated result"
+                                    style={{ display: 'block' }}
+                                />
+                            )}
                         </div>
                     </div>
                 )}
