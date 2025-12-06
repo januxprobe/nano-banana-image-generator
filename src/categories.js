@@ -205,6 +205,22 @@ export const categories = [
         inputs: [
           { name: 'background_color', label: 'Background Color', type: 'text', placeholder: 'a pure white studio background (RGB 255, 255, 255)' }
         ]
+      },
+      {
+        id: 'luxury-product-cover',
+        title: 'Luxury Product Cover',
+        description: 'High-end product advertisement with elegant lighting and details.',
+        template: "[product_name] on the cover, set against an elegant and luxurious [background_style] with [lighting] radiating from behind it.\nThe product name “[product_name]” appears at the top center in [font_style], with the [brand_logo] placed just below. Additional text highlights key product details reading: “[feature_line].” A subtle call-to-action label sits beneath the description. The [packaging_details] feature [design_elements], giving it a high-end, luxurious finish. --ar 24:43",
+        inputs: [
+          { name: 'product_name', label: 'Product Name', type: 'text', placeholder: 'Velvet Glow' },
+          { name: 'background_style', label: 'Background Style', type: 'text', placeholder: 'deep emerald green silk' },
+          { name: 'lighting', label: 'Lighting', type: 'text', placeholder: 'soft golden halo' },
+          { name: 'font_style', label: 'Font Style', type: 'text', placeholder: 'gold serif typography' },
+          { name: 'brand_logo', label: 'Brand Logo', type: 'text', placeholder: 'minimalist lotus icon' },
+          { name: 'feature_line', label: 'Feature Line', type: 'text', placeholder: '24H Hydration & Shine' },
+          { name: 'packaging_details', label: 'Packaging Details', type: 'text', placeholder: 'sleek glass bottle' },
+          { name: 'design_elements', label: 'Design Elements', type: 'text', placeholder: 'gold foil accents' }
+        ]
       }
     ]
   },
