@@ -445,11 +445,13 @@ export const categories = [
         id: 'retro-gp',
         title: 'Retro Grand Prix',
         description: 'Cinematic vintage racing scenes.',
-        template: "lively scene at the [gp_name] in the [year]. Iconic [car_type] cars racing through the narrow streets of Monte-Carlo, engines roaring, vibrant crowd cheering from packed grandstands and balcony terraces. Elegant spectators in vintage [year] Riviera fashion pastel polo shirts, oversized sunglasses, chic dresses leaning over barriers to watch the action. The harbor is filled with luxurious yachts, colorful flags fluttering in the warm Mediterranean breeze. Sunlight reflecting on the cars’ polished bodies, heat haze rising from the asphalt, excitement in the air. Warm tones, moderate contrast, nostalgic atmosphere. Shot on Kodak Eastman 100T 5247, 35mm film look, fine analog grain, warm slightly faded colors, gentle contrast, soft nostalgic patina. Subtle scanlines, natural lens flares, light leaks, slight VHS cassette texture, authentic [year] analog imperfections. Cinematic, realistic, immersive Riviera mood. Designed for Instagram story format. --ar 9:16",
+        template: "lively scene at the [gp_name] in the [year]. Iconic [car_type] cars racing through [track_description], engines roaring, vibrant crowd cheering from packed grandstands. Elegant spectators in vintage [year] fashion leaning over barriers to watch the action. [environment_description]. Sunlight reflecting on the cars’ polished bodies, heat haze rising from the asphalt, excitement in the air. Warm tones, moderate contrast, nostalgic atmosphere. Shot on Kodak Eastman 100T 5247, 35mm film look, fine analog grain, warm slightly faded colors, gentle contrast, soft nostalgic patina. Subtle scanlines, natural lens flares, light leaks, slight VHS cassette texture, authentic [year] analog imperfections. Cinematic, realistic, immersive mood. Designed for Instagram story format. --ar 9:16",
         inputs: [
           { name: 'gp_name', label: 'Grand Prix Name', type: 'text', placeholder: 'Monaco Grand Prix' },
           { name: 'year', label: 'Year', type: 'text', placeholder: '1980s' },
-          { name: 'car_type', label: 'Car Type', type: 'text', placeholder: 'Formula 1' }
+          { name: 'car_type', label: 'Car Type', type: 'text', placeholder: 'Formula 1' },
+          { name: 'track_description', label: 'Track Description', type: 'text', placeholder: 'the narrow streets of Monte-Carlo' },
+          { name: 'environment_description', label: 'Environment', type: 'textarea', placeholder: 'The harbor is filled with luxurious yachts, colorful flags fluttering in the warm Mediterranean breeze' }
         ]
       }
     ]
