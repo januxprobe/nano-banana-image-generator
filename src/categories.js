@@ -279,6 +279,15 @@ export const categories = [
         inputs: [
           { name: 'fill_elements', label: 'Fill Elements', type: 'text', placeholder: 'extend the cobblestone pavement, empty park benches, or grass textures' }
         ]
+      },
+      {
+        id: 'restore-photo',
+        title: 'Restore Old Photo',
+        description: 'Restores old or damaged photos to modern quality.',
+        template: "Faithfully restore this image with high fidelity to modern photograph quality, in full color, upscale to 4K",
+        inputs: [
+          { name: 'image', label: 'Upload Photo', type: 'file', placeholder: 'Upload an old photo...' }
+        ]
       }
     ]
   },

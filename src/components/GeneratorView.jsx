@@ -5,6 +5,7 @@ import './GeneratorView.css';
 
 const GeneratorView = ({ item, isPro }) => {
     const [formValues, setFormValues] = useState({});
+    const [uploadedFiles, setUploadedFiles] = useState({});
     const [generatedPrompt, setGeneratedPrompt] = useState('');
     const [showPrompt, setShowPrompt] = useState(false);
     const [copied, setCopied] = useState(false);
@@ -18,6 +19,7 @@ const GeneratorView = ({ item, isPro }) => {
             initialValues[input.name] = '';
         });
         setFormValues(initialValues);
+        setUploadedFiles({});
         setGeneratedPrompt('');
         setShowPrompt(false);
         setCopied(false);
@@ -30,6 +32,28 @@ const GeneratorView = ({ item, isPro }) => {
             ...prev,
             [name]: value
         }));
+    };
+
+    const handleFileChange = (name, file) => {
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setUploadedFiles(prev => ({
+                    ...prev,
+                    [name]: {
+                        data: reader.result.split(',')[1],
+                        mimeType: file.type
+                    }
+                }));
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setUploadedFiles(prev => {
+                const newFiles = { ...prev };
+                delete newFiles[name];
+                return newFiles;
+            });
+        }
     };
 
     const generatePrompt = () => {
@@ -69,12 +93,25 @@ const GeneratorView = ({ item, isPro }) => {
             const genAI = new GoogleGenerativeAI(apiKey);
 
             // Select model based on Pro mode
-            const modelName = isPro ? "gemini-3-pro-image-preview" : "gemini-2.5-flash-image";
+            const modelName = isPro ? "gemini-3-pro-image-preview" : "gemini-2.5-flash-image"; // Note: For image-to-image/text-to-image we might want a specific model if sending images
             console.log(`Using model: ${modelName}`);
             const model = genAI.getGenerativeModel({ model: modelName });
 
+            // Prepare prompt parts
+            const promptParts = [prompt];
+
+            // Add uploaded images if any
+            Object.values(uploadedFiles).forEach(file => {
+                promptParts.push({
+                    inlineData: {
+                        data: file.data,
+                        mimeType: file.mimeType
+                    }
+                });
+            });
+
             // Generate content with the prompt
-            const result = await model.generateContent(prompt);
+            const result = await model.generateContent(promptParts);
 
             console.log("Full API result:", result);
             const response = result.response;
@@ -154,6 +191,13 @@ const GeneratorView = ({ item, isPro }) => {
                                     value={formValues[input.name] || ''}
                                     onChange={(e) => handleInputChange(input.name, e.target.value)}
                                     rows={4}
+                                />
+                            ) : input.type === 'file' ? (
+                                <input
+                                    type="file"
+                                    id={input.name}
+                                    accept="image/*"
+                                    onChange={(e) => handleFileChange(input.name, e.target.files[0])}
                                 />
                             ) : (
                                 <input
