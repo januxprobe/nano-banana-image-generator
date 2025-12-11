@@ -5,6 +5,8 @@ A powerful web application designed to generate high-fidelity prompts for the Na
 ## Features
 
 - **11+ Categories**: Ranging from Photorealism and E-commerce to Creative Experiments and Memes.
+- **Brand-Friendly Mockups**: specialized tools for creating high-quality, lifestyle device mockups from website screenshots.
+- **Smart Input Controls**: Enhanced UI with editable dropdowns (comboboxes) for quick selection of curated options or custom input.
 - **Dynamic Prompt Builder**: Interactive forms that construct complex prompts based on specific templates.
 - **Model Switcher**: Toggle between **Standard** and **Pro** models to automatically adjust prompt syntax (e.g., adding `--v 6.0 --style raw`).
 - **One-Click Copy**: Easily copy generated prompts to your clipboard.
