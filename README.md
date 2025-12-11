@@ -12,6 +12,17 @@ A powerful web application designed to generate high-fidelity prompts for the Na
 - **One-Click Copy**: Easily copy generated prompts to your clipboard.
 - **Responsive Design**: A modern, dark-themed interface built with React and Vanilla CSS.
 
+## What You Can Do
+
+With Nano Banana Image Generator, you can:
+
+*   **Create Professional Visuals**: Generate high-quality assets for social media, marketing campaigns, and presentations without a dedicated design team.
+*   **Showcase Products**: Produce e-commerce ready product shots, virtual try-ons, and lifestyle mockups perfect for brand storytelling.
+*   **Visualize Concepts**: Instantly turn ideas into visual reality, whether it's interior design layouts, architectural concepts, or educational infographics.
+*   **Rapid Prototyping**: Convert rough sketches and wireframes into polished UI designs and flowcharts.
+*   **Restore & Edit**: Breathe new life into old photos or intelligently expand and modify existing images.
+*   **Have Fun**: Create memes, avatars, and artistic experiments.
+
 ## Getting Started
 
 ### Prerequisites
