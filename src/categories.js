@@ -221,6 +221,60 @@ export const categories = [
           { name: 'packaging_details', label: 'Packaging Details', type: 'text', placeholder: 'sleek glass bottle' },
           { name: 'design_elements', label: 'Design Elements', type: 'text', placeholder: 'gold foil accents' }
         ]
+      },
+      {
+        id: 'brand-mockup',
+        title: 'Brand-Friendly Mockup',
+        description: 'Place a website screenshot on a device in a lifestyle setting.',
+        template: "Remove the browser UI and place the pasted website screenshot naturally on the screen of an [device].\n\nUse the screenshot to guide:\n\n- Interior Style: [interior_style]\n\n- Profession of the Space Owner: [profession]\n\n- Mood: [mood]\n\n- Time of day: [time_of_day]\n\nCamera: high-end lifestyle brand film photography, long focal length, close-up framing with shallow depth of field, soft bokeh, slight chromatic aberration at the edges.\n\nIntent: a cohesive, high-quality but approachable scene where the environment gently mirrors the screenshot’s style without feeling luxurious or overly curated.",
+        inputs: [
+          { name: 'screenshot', label: 'Website Screenshot', type: 'file', placeholder: 'Upload screenshot...' },
+          {
+            name: 'device',
+            label: 'Device',
+            type: 'combobox',
+            placeholder: 'Apple Pro Display',
+            options: ['Apple Pro Display', 'MacBook Pro 16"', 'iMac 24"', 'iPad Pro']
+          },
+          {
+            name: 'interior_style',
+            label: 'Interior Style',
+            type: 'combobox',
+            placeholder: 'everyday, modern, approachable, clean lines, soft color accents',
+            options: [
+              'everyday, modern, approachable, clean lines, soft color accents',
+              'minimalist, industrial, raw concrete, monochromatic',
+              'warm, cozy, wooden textures, soft lighting, plants',
+              'scandinavian, light wood, white walls, airy'
+            ]
+          },
+          {
+            name: 'profession',
+            label: 'Profession',
+            type: 'combobox',
+            placeholder: 'software product manager',
+            options: ['software product manager', 'creative director', 'architect', 'developer', 'designer', 'content creator']
+          },
+          {
+            name: 'mood',
+            label: 'Mood',
+            type: 'combobox',
+            placeholder: 'dark walls, well-staged but lived-in, creative, and realistic',
+            options: [
+              'dark walls, well-staged but lived-in, creative, and realistic',
+              'bright, airy, sun-drenched, energetic',
+              'calm, focused, zen-like, organized',
+              'moody, dark academia, intellectual, cozy'
+            ]
+          },
+          {
+            name: 'time_of_day',
+            label: 'Time of Day',
+            type: 'combobox',
+            placeholder: 'night',
+            options: ['night', 'day', 'golden hour', 'blue hour', 'mid-day']
+          }
+        ]
       }
     ]
   },

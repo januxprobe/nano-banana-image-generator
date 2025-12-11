@@ -199,6 +199,22 @@ const GeneratorView = ({ item, isPro }) => {
                                     accept="image/*"
                                     onChange={(e) => handleFileChange(input.name, e.target.files[0])}
                                 />
+                            ) : input.type === 'combobox' ? (
+                                <>
+                                    <input
+                                        type="text"
+                                        id={input.name}
+                                        list={`list-${input.name}`}
+                                        placeholder={input.placeholder}
+                                        value={formValues[input.name] || ''}
+                                        onChange={(e) => handleInputChange(input.name, e.target.value)}
+                                    />
+                                    <datalist id={`list-${input.name}`}>
+                                        {(input.options || []).map((opt) => (
+                                            <option key={opt} value={opt} />
+                                        ))}
+                                    </datalist>
+                                </>
                             ) : (
                                 <input
                                     type={input.type}
