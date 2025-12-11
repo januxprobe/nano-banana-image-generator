@@ -56,8 +56,8 @@ With Nano Banana Image Generator, you can:
 2.  **Choose a Template**: Click on a specific generator (e.g., "Hyper-Realistic Crowd").
 3.  **Fill in the Details**: Enter the required information in the form fields (Subject, Environment, etc.).
 4.  **Select Model**: Use the toggle in the top right to switch between Standard and Pro models.
-5.  **Generate**: Click the "Generate Prompt" button.
-6.  **Copy**: Click "Copy" to save the prompt to your clipboard and use it with the Nano Banana model.
+5.  **Generate**: Click "Generate Image" to create the visual directly in the app, or "Generate Prompt" to see the text.
+6.  **View & Share**: View your generated image immediately. You can also copy the prompt if needed.
 
 ## Technologies
 
