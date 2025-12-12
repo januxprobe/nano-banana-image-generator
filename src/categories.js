@@ -150,8 +150,11 @@ export const categories = [
         id: 'multi-subject',
         title: 'Multi-Subject Compositing',
         description: 'Combines multiple inputs into a group photo.',
-        template: "[description]",
+        template: "Using the provided reference images as the source subjects, create a composite image matching this description: [description]. Maintain the visual characteristics of the subjects in the reference images.",
         inputs: [
+          { name: 'ref_img_1', label: 'Reference Image 1', type: 'file', placeholder: 'Upload subject 1...' },
+          { name: 'ref_img_2', label: 'Reference Image 2', type: 'file', placeholder: 'Upload subject 2...' },
+          { name: 'ref_img_3', label: 'Reference Image 3', type: 'file', placeholder: 'Upload subject 3...' },
           { name: 'description', label: 'Description', type: 'text', placeholder: 'an office team photo, everyone making a silly face' }
         ]
       },

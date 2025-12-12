@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
 import PeelingBananaLoader from './PeelingBananaLoader';
 import './GeneratorView.css';
 
@@ -100,20 +100,20 @@ const GeneratorView = ({ item, isPro }) => {
             // This is often needed for image generation queries that might trigger false positives
             const safetySettings = [
                 {
-                    category: 'HARM_CATEGORY_HARASSMENT',
-                    threshold: 'BLOCK_NONE',
+                    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+                    threshold: HarmBlockThreshold.BLOCK_NONE,
                 },
                 {
-                    category: 'HARM_CATEGORY_HATE_SPEECH',
-                    threshold: 'BLOCK_NONE',
+                    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                    threshold: HarmBlockThreshold.BLOCK_NONE,
                 },
                 {
-                    category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-                    threshold: 'BLOCK_NONE',
+                    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                    threshold: HarmBlockThreshold.BLOCK_NONE,
                 },
                 {
-                    category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-                    threshold: 'BLOCK_NONE',
+                    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                    threshold: HarmBlockThreshold.BLOCK_NONE,
                 },
             ];
 
@@ -141,7 +141,9 @@ const GeneratorView = ({ item, isPro }) => {
             console.log("Full API result:", result);
             const response = result.response;
             console.log("Response object:", response);
-            console.log("Response text:", response.text());
+
+            // Do NOT call response.text() immediately, as it throws if the response was blocked.
+            // console.log("Response text:", response.text());
 
             // Check if the response contains image data
             // The response might contain inline data or a URL
@@ -153,6 +155,11 @@ const GeneratorView = ({ item, isPro }) => {
                 if (candidate.finishReason === 'SAFETY') {
                     const textResponse = candidate.content?.parts?.[0]?.text || "Safety filters triggered";
                     throw new Error(`Image generation blocked by safety filters: ${textResponse}`);
+                }
+
+                // Check for OTHER blocks (common with image generation failures)
+                if (candidate.finishReason === 'OTHER') {
+                    throw new Error("Image generation failed (finishReason: OTHER). This often happens if the model refuses the prompt or image inputs due to safety or policy guidelines, even if safety settings are relaxed.");
                 }
 
                 // Look for inline image data in the response

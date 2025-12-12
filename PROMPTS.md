@@ -186,9 +186,12 @@ This file lists all the available prompt categories and their corresponding temp
 
 ### Multi-Subject Compositing
 **Template:**
-> [description]
+> Using the provided reference images as the source subjects, create a composite image matching this description: [description]. Maintain the visual characteristics of the subjects in the reference images.
 
 **Inputs:**
+- ref_img_1 (Reference Image 1): Upload subject 1...
+- ref_img_2 (Reference Image 2): Upload subject 2...
+- ref_img_3 (Reference Image 3): Upload subject 3...
 - description (Description): an office team photo, everyone making a silly face
 
 ### Whiteboard Marker Art
