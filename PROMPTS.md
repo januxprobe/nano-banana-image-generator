@@ -146,10 +146,10 @@ This file lists all the available prompt categories and their corresponding temp
 
 ### Aging Through the Years
 **Template:**
-> "Generate the holiday photo of [subject] through the ages up to [age] years old"
+> "Generate the holiday photo of the person in the uploaded image through the ages up to [age] years old"
 
 **Inputs:**
-- subject (Subject): this person
+- reference_image (Reference Photo): Upload a reference photo...
 - age (Max Age): 80
 
 ### Recursive Visuals

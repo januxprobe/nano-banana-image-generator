@@ -100,9 +100,9 @@ export const categories = [
         id: 'aging',
         title: 'Aging Through the Years',
         description: 'Temporal consistency and aging effects.',
-        template: "\"Generate the holiday photo of [subject] through the ages up to [age] years old\"",
+        template: "\"Generate the holiday photo of the person in the uploaded image through the ages up to [age] years old\"",
         inputs: [
-          { name: 'subject', label: 'Subject', type: 'text', placeholder: 'this person' },
+          { name: 'reference_image', label: 'Reference Photo', type: 'file', placeholder: 'Upload a reference photo...' },
           { name: 'age', label: 'Max Age', type: 'number', placeholder: '80' }
         ]
       },
