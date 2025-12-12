@@ -93,9 +93,34 @@ const GeneratorView = ({ item, isPro }) => {
             const genAI = new GoogleGenerativeAI(apiKey);
 
             // Select model based on Pro mode
-            const modelName = isPro ? "gemini-3-pro-image-preview" : "gemini-2.5-flash-image"; // Note: For image-to-image/text-to-image we might want a specific model if sending images
+            const modelName = isPro ? "gemini-3-pro-image-preview" : "gemini-2.5-flash-image";
             console.log(`Using model: ${modelName}`);
-            const model = genAI.getGenerativeModel({ model: modelName });
+
+            // Configure safety settings to be less restrictive for creative tasks
+            // This is often needed for image generation queries that might trigger false positives
+            const safetySettings = [
+                {
+                    category: 'HARM_CATEGORY_HARASSMENT',
+                    threshold: 'BLOCK_NONE',
+                },
+                {
+                    category: 'HARM_CATEGORY_HATE_SPEECH',
+                    threshold: 'BLOCK_NONE',
+                },
+                {
+                    category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+                    threshold: 'BLOCK_NONE',
+                },
+                {
+                    category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+                    threshold: 'BLOCK_NONE',
+                },
+            ];
+
+            const model = genAI.getGenerativeModel({
+                model: modelName,
+                safetySettings
+            });
 
             // Prepare prompt parts
             const promptParts = [prompt];
