@@ -136,6 +136,7 @@ const GeneratorView = ({ item, isPro }) => {
             });
 
             // Generate content with the prompt
+            console.log("Sending prompt with parts count:", promptParts.length);
             const result = await model.generateContent(promptParts);
 
             console.log("Full API result:", result);
@@ -144,6 +145,13 @@ const GeneratorView = ({ item, isPro }) => {
 
             // Do NOT call response.text() immediately, as it throws if the response was blocked.
             // console.log("Response text:", response.text());
+
+            // Check if the prompt was blocked entirely (before generation)
+            if (response.promptFeedback && response.promptFeedback.blockReason) {
+                const reason = response.promptFeedback.blockReason;
+                console.error("Prompt blocked:", response.promptFeedback);
+                throw new Error(`Prompt was blocked by the model. Reason: ${reason}. This usually means the input images or text violated safety policies.`);
+            }
 
             // Check if the response contains image data
             // The response might contain inline data or a URL
@@ -190,8 +198,11 @@ const GeneratorView = ({ item, isPro }) => {
                 throw new Error(`No image found in response. FinishReason: ${candidate.finishReason}. Parts: ${candidate.content?.parts?.length || 0}`);
             }
 
-            // If no candidates
-            throw new Error("No candidates returned by the model.");
+            // If no candidates and no prompt feedback error caught above
+            if (response.promptFeedback) {
+                throw new Error(`No candidates returned. Prompt Feedback: ${JSON.stringify(response.promptFeedback)}`);
+            }
+            throw new Error("No candidates returned by the model (and no specific error details found).");
 
         } catch (error) {
             console.error("Error generating image:", error);
