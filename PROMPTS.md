@@ -119,6 +119,7 @@ This file lists all the available prompt categories and their corresponding temp
 > Keep the facial features of the person in the uploaded image exactly consistent. Dress them in [outfit], similar to the reference image. Background : Place the subject against [background]. The background should have a subtle gradient, slightly lighter behind the subject and darker towards the edges (vignette effect). There should be no other objects. Photography Style : Shot on a Sony A7III with an 85mm f/1.4 lens, creating a flattering portrait compression. Lighting : Use a classic three-point lighting setup. The main key light should create soft, defining shadows on the face. A subtle rim light should separate the subject's shoulders and hair from the dark background. Crucial Details : Render natural skin texture with visible pores, not an airbrushed look. Add natural catchlights to the eyes. The fabric of the suit should show a subtle wool texture. Final image should be an ultra-realistic, 8k professional headshot.
 
 **Inputs:**
+- reference_image (Reference Photo): Upload a clear headshot...
 - outfit (Outfit): a professional navy blue business suit with a white shirt
 - background (Background): a clean, solid dark gray studio photography backdrop
 
