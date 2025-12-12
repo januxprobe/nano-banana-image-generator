@@ -75,6 +75,7 @@ export const categories = [
         description: 'Cinematic, nostalgic "Kodak Portra" look.',
         template: "Keep the facial features of the person in the uploaded image exactly consistent. Style : A cinematic, emotional portrait shot on Kodak Portra 400 film. Setting : [setting]. Warm, nostalgic lighting hitting the side of the face. Atmosphere : Apply a subtle film grain and soft focus to create a dreamy, storytelling vibe. Action : [action]. Details : High quality, depth of field, bokeh background of city lights.",
         inputs: [
+          { name: 'reference_image', label: 'Reference Photo', type: 'file', placeholder: 'Upload a reference photo...' },
           { name: 'setting', label: 'Setting', type: 'text', placeholder: 'An urban street coffee shop window at Golden Hour (sunset)' },
           { name: 'action', label: 'Action', type: 'text', placeholder: 'The subject is looking slightly away from the camera, holding a coffee cup, with a relaxed, candid expression' }
         ]

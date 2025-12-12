@@ -128,6 +128,7 @@ This file lists all the available prompt categories and their corresponding temp
 > Keep the facial features of the person in the uploaded image exactly consistent. Style : A cinematic, emotional portrait shot on Kodak Portra 400 film. Setting : [setting]. Warm, nostalgic lighting hitting the side of the face. Atmosphere : Apply a subtle film grain and soft focus to create a dreamy, storytelling vibe. Action : [action]. Details : High quality, depth of field, bokeh background of city lights.
 
 **Inputs:**
+- reference_image (Reference Photo): Upload a reference photo...
 - setting (Setting): An urban street coffee shop window at Golden Hour (sunset)
 - action (Action): The subject is looking slightly away from the camera, holding a coffee cup, with a relaxed, candid expression
 
