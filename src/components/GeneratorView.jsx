@@ -185,10 +185,13 @@ const GeneratorView = ({ item, isPro }) => {
                         throw new Error(`Model returned text instead of image: "${textPart.text}"`);
                     }
                 }
+
+                // If we have a candidate but no recognizable image or text
+                throw new Error(`No image found in response. FinishReason: ${candidate.finishReason}. Parts: ${candidate.content?.parts?.length || 0}`);
             }
 
-            // If no image was found in the response, throw an error
-            throw new Error("No image was generated. The model may have returned an unexpected response. Check console for details.");
+            // If no candidates
+            throw new Error("No candidates returned by the model.");
 
         } catch (error) {
             console.error("Error generating image:", error);
