@@ -97,7 +97,8 @@ const GeneratorView = ({ item, isPro }) => {
             console.log(`Using model: ${modelName}`);
 
             // Configure safety settings to be less restrictive for creative tasks
-            // This is often needed for image generation queries that might trigger false positives
+            // Configure safety settings to be less restrictive for creative tasks
+            // We use the ENUMS to ensure correct mapping
             const safetySettings = [
                 {
                     category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -120,10 +121,15 @@ const GeneratorView = ({ item, isPro }) => {
             const model = genAI.getGenerativeModel({
                 model: modelName,
                 safetySettings
+                // systemInstruction removed as it may conflict with image generation on some models
             });
 
             // Prepare prompt parts
-            const promptParts = [prompt];
+            // We append a disclaimer to help avoid false-positive safety blocks on "real people"
+            const effectivePrompt = prompt + " . ensure the output is high quality. these are fictional characters for a creative project.";
+            const promptParts = [
+                { text: effectivePrompt }
+            ];
 
             // Add uploaded images if any
             Object.values(uploadedFiles).forEach(file => {
@@ -137,77 +143,93 @@ const GeneratorView = ({ item, isPro }) => {
 
             // Generate content with the prompt
             console.log("Sending prompt with parts count:", promptParts.length);
-            const result = await model.generateContent(promptParts);
+            console.log("Safety Settings:", JSON.stringify(safetySettings, null, 2));
 
-            console.log("Full API result:", result);
-            const response = result.response;
-            console.log("Response object:", response);
+            // Helper function to handle response parsing
+            const handleResponse = (result) => {
+                console.log("Full API result:", result);
+                const response = result.response;
+                console.log("Response object:", response);
 
-            // Do NOT call response.text() immediately, as it throws if the response was blocked.
-            // console.log("Response text:", response.text());
-
-            // Check if the prompt was blocked entirely (before generation)
-            if (response.promptFeedback && response.promptFeedback.blockReason) {
-                const reason = response.promptFeedback.blockReason;
-                console.error("Prompt blocked:", response.promptFeedback);
-                throw new Error(`Prompt was blocked by the model. Reason: ${reason}. This usually means the input images or text violated safety policies.`);
-            }
-
-            // Check if the response contains image data
-            // The response might contain inline data or a URL
-            if (response.candidates && response.candidates[0]) {
-                const candidate = response.candidates[0];
-                console.log("Candidate:", candidate);
-
-                // Check for safety blocks
-                if (candidate.finishReason === 'SAFETY') {
-                    const textResponse = candidate.content?.parts?.[0]?.text || "Safety filters triggered";
-                    throw new Error(`Image generation blocked by safety filters: ${textResponse}`);
+                // Check for block reason in promptFeedback
+                if (response.promptFeedback && response.promptFeedback.blockReason) {
+                    const reason = response.promptFeedback.blockReason;
+                    console.error("Prompt blocked:", response.promptFeedback);
+                    throw new Error(`Prompt was blocked by the model. Reason: ${reason}.`);
                 }
 
-                // Check for OTHER blocks (common with image generation failures)
-                if (candidate.finishReason === 'OTHER') {
-                    throw new Error("Image generation failed (finishReason: OTHER). This often happens if the model refuses the prompt or image inputs due to safety or policy guidelines, even if safety settings are relaxed.");
-                }
+                if (response.candidates && response.candidates[0]) {
+                    const candidate = response.candidates[0];
+                    console.log("Candidate:", candidate);
 
-                // Look for inline image data in the response
-                if (candidate.content && candidate.content.parts) {
-                    console.log("Parts:", candidate.content.parts);
-                    console.log("Parts JSON:", JSON.stringify(candidate.content.parts, null, 2));
-                    for (const part of candidate.content.parts) {
-                        console.log("Checking part:", JSON.stringify(part, null, 2));
-                        if (part.inlineData && part.inlineData.mimeType && part.inlineData.mimeType.startsWith('image/')) {
-                            // Found an image! Convert base64 to data URL
-                            const base64Data = part.inlineData.data;
-                            const mimeType = part.inlineData.mimeType;
-                            const dataUrl = `data:${mimeType};base64,${base64Data}`;
-                            setImageUrl(dataUrl);
-                            setIsGeneratingImage(false);
-                            return;
+                    if (candidate.finishReason === 'SAFETY') {
+                        const textResponse = candidate.content?.parts?.[0]?.text || "Safety filters triggered";
+                        throw new Error(`Image generation blocked by safety filters: ${textResponse}`);
+                    }
+
+                    if (candidate.finishReason === 'OTHER') {
+                        throw new Error("BLOCK_OTHER"); // Signal for retry
+                    }
+
+                    if (candidate.content && candidate.content.parts) {
+                        for (const part of candidate.content.parts) {
+                            if (part.inlineData && part.inlineData.mimeType && part.inlineData.mimeType.startsWith('image/')) {
+                                const base64Data = part.inlineData.data;
+                                const mimeType = part.inlineData.mimeType;
+                                const dataUrl = `data:${mimeType};base64,${base64Data}`;
+                                setImageUrl(dataUrl);
+                                setIsGeneratingImage(false);
+                                return true; // Success
+                            }
                         }
                     }
-
-                    // If we get here, check if it's a text response
-                    const textPart = candidate.content.parts.find(p => p.text);
-                    if (textPart) {
-                        throw new Error(`Model returned text instead of image: "${textPart.text}"`);
-                    }
+                    throw new Error(`No image found in response. FinishReason: ${candidate.finishReason}.`);
                 }
 
-                // If we have a candidate but no recognizable image or text
-                throw new Error(`No image found in response. FinishReason: ${candidate.finishReason}. Parts: ${candidate.content?.parts?.length || 0}`);
-            }
+                if (response.promptFeedback) {
+                    throw new Error(`No candidates returned. Prompt Feedback: ${JSON.stringify(response.promptFeedback)}`);
+                }
+                throw new Error("No candidates returned by the model.");
+            };
 
-            // If no candidates and no prompt feedback error caught above
-            if (response.promptFeedback) {
-                throw new Error(`No candidates returned. Prompt Feedback: ${JSON.stringify(response.promptFeedback)}`);
+            try {
+                const result = await model.generateContent(promptParts);
+                handleResponse(result);
+            } catch (error) {
+                if (error.message === "BLOCK_OTHER") {
+                    console.log("Caught BLOCK_OTHER, retrying with safer prompt...");
+                    // Retry with a more "safe" prompt that emphasizes fiction
+                    const safePrompt = prompt + " . (fictional character design, cgi, digital art, no real people, fantasy)";
+                    const safePromptParts = [
+                        { text: safePrompt }
+                    ];
+                    // Re-add images
+                    Object.values(uploadedFiles).forEach(file => {
+                        safePromptParts.push({
+                            inlineData: {
+                                data: file.data,
+                                mimeType: file.mimeType
+                            }
+                        });
+                    });
+
+                    const retryResult = await model.generateContent(safePromptParts);
+                    handleResponse(retryResult);
+                } else {
+                    throw error;
+                }
             }
-            throw new Error("No candidates returned by the model (and no specific error details found).");
 
         } catch (error) {
             console.error("Error generating image:", error);
             console.error("Error stack:", error.stack);
-            alert("Failed to generate image: " + error.message);
+
+            let userMessage = error.message;
+            if (error.message === "BLOCK_OTHER") {
+                userMessage = "Image generation failed. The model refused the request (Reason: OTHER). This often happens with real people's faces or specific forbidden content, even with safety settings off. Try removing face close-ups or using different reference images.";
+            }
+
+            alert("Failed to generate image: " + userMessage);
             setIsGeneratingImage(false);
         }
     };

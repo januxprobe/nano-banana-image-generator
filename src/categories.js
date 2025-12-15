@@ -197,9 +197,10 @@ export const categories = [
         id: 'virtual-try-on',
         title: 'Virtual Model Try-On',
         description: 'Dresses a model in a specific garment.',
-        template: "Using Image 1 (the garment) and Image 2 (the model), create a hyper-realistic full-body fashion photo where the model is wearing the garment. Crucial Fit Details : The [garment_type] must drape naturally on the model's body, conforming to their posture and creating realistic folds and wrinkles. High-Fidelity Preservation : Preserve the original fabric texture, color, and any logos from Image 1 with extreme accuracy. Seamless Integration : Blend the garment into Image 2 by perfectly matching the ambient lighting, color temperature, and shadow direction. Photography Style : Clean e-commerce lookbook, shot on a Canon EOS R5 with a 50mm f/1.8 lens for a natural, professional look.",
+        template: "Using Image 1 (the garment) and Image 2 (the model), create a hyper-realistic full-body fashion photo where the model is wearing the garment. Crucial Fit Details : The garment in Image 1 must drape naturally on the model's body, conforming to their posture and creating realistic folds and wrinkles. High-Fidelity Preservation : Preserve the original fabric texture, color, and any logos from Image 1 with extreme accuracy. Seamless Integration : Blend the garment into Image 2 by perfectly matching the ambient lighting, color temperature, and shadow direction. Photography Style : Clean e-commerce lookbook, shot on a Canon EOS R5 with a 50mm f/1.8 lens for a natural, professional look.",
         inputs: [
-          { name: 'garment_type', label: 'Garment Type', type: 'text', placeholder: 'T-shirt/Jacket' }
+          { name: 'garment_image', label: 'Garment Image (Image 1)', type: 'file', placeholder: 'Upload garment...' },
+          { name: 'model_image', label: 'Model Image (Image 2)', type: 'file', placeholder: 'Upload model...' }
         ]
       },
       {
