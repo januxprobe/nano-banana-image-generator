@@ -281,6 +281,16 @@ export const categories = [
             options: ['night', 'day', 'golden hour', 'blue hour', 'mid-day']
           }
         ]
+      },
+      {
+        id: 'food-advertising',
+        title: 'Advertising Food Photography',
+        description: 'High-end dynamic food shots with floating elements.',
+        template: "Advertising-style food photography of [subject_1] arranged on a rustic table, with [subject_2] floating above in mid-air and a splash of [subject_1] frozen in motion. High-resolution photo manipulation with selective soft focus, clean negative space for text, dramatic lighting, and crisp detail.",
+        inputs: [
+          { name: 'subject_1', label: 'Main Subject', type: 'text', placeholder: 'fresh strawberries' },
+          { name: 'subject_2', label: 'Floating Element', type: 'text', placeholder: 'water droplets' }
+        ]
       }
     ]
   },

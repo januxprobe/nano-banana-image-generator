@@ -273,6 +273,15 @@ This file lists all the available prompt categories and their corresponding temp
 - mood (Mood): dark walls, well-staged but lived-in, creative, and realistic
 - time_of_day (Time of Day): night
 
+
+### Advertising Food Photography
+**Template:**
+> Advertising-style food photography of [subject_1] arranged on a rustic table, with [subject_2] floating above in mid-air and a splash of [subject_1] frozen in motion. High-resolution photo manipulation with selective soft focus, clean negative space for text, dramatic lighting, and crisp detail.
+
+**Inputs:**
+- subject_1 (Main Subject): fresh strawberries
+- subject_2 (Floating Element): water droplets
+
 ## Workplace & Productivity
 *Business visualizations and layouts.*
 
