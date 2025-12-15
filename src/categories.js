@@ -413,6 +413,16 @@ export const categories = [
           { name: 'offer', label: 'Offer', type: 'text', placeholder: 'Buy One Get One Free' },
           { name: 'footer', label: 'Footer', type: 'text', placeholder: 'Limited Time Only' }
         ]
+      },
+      {
+        id: 'predictive-heatmap',
+        title: 'Predictive Attention Heat Map',
+        description: 'Visualizes user attention and CTA focus.',
+        template: "Generate a predictive attention heat map on top of this landing page. The audit should highlight areas of high visual engagement and identify any elements that are distracting focus from the primary [CTA_Button_Label] CTA.",
+        inputs: [
+          { name: 'landing_page_screenshot', label: 'Landing Page Screenshot', type: 'file', placeholder: 'Upload screenshot...' },
+          { name: 'CTA_Button_Label', label: 'Primary CTA Label', type: 'text', placeholder: 'Get Started' }
+        ]
       }
     ]
   },

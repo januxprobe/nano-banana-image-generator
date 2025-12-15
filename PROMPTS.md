@@ -379,6 +379,15 @@ This file lists all the available prompt categories and their corresponding temp
 - offer (Offer): Buy One Get One Free
 - footer (Footer): Limited Time Only
 
+
+### Predictive Attention Heat Map
+**Template:**
+> Generate a predictive attention heat map on top of this landing page. The audit should highlight areas of high visual engagement and identify any elements that are distracting focus from the primary [CTA_Button_Label] CTA.
+
+**Inputs:**
+- landing_page_screenshot (Landing Page Screenshot): Upload screenshot...
+- CTA_Button_Label (Primary CTA Label): Get Started
+
 ## Daily Life & Translation
 *Translations and localization.*
 
