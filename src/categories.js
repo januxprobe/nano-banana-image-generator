@@ -423,6 +423,17 @@ export const categories = [
           { name: 'landing_page_screenshot', label: 'Landing Page Screenshot', type: 'file', placeholder: 'Upload screenshot...' },
           { name: 'CTA_Button_Label', label: 'Primary CTA Label', type: 'text', placeholder: 'Get Started' }
         ]
+      },
+      {
+        id: 'heatmap-redesign',
+        title: 'Heatmap-Driven Redesign',
+        description: 'Redesign hero section based on heatmap insights.',
+        template: "Analyze the provided landing page screenshot alongside its predictive attention heat map. Generate a redesign of the hero section optimized specifically to maximize the click-through rate on the primary ‘[CTA_Button_Label]’ button. The new design should use the heat map insights to eliminate distractions and focus user attention directly on the main conversion goal.",
+        inputs: [
+          { name: 'original_screenshot', label: 'Original Screenshot', type: 'file', placeholder: 'Upload original...' },
+          { name: 'heatmap_image', label: 'Heatmap Image', type: 'file', placeholder: 'Upload generated heatmap...' },
+          { name: 'CTA_Button_Label', label: 'Primary CTA Label', type: 'text', placeholder: 'Get Started' }
+        ]
       }
     ]
   },

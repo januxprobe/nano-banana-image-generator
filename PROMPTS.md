@@ -388,6 +388,15 @@ This file lists all the available prompt categories and their corresponding temp
 - landing_page_screenshot (Landing Page Screenshot): Upload screenshot...
 - CTA_Button_Label (Primary CTA Label): Get Started
 
+### Heatmap-Driven Redesign
+**Template:**
+> Analyze the provided landing page screenshot alongside its predictive attention heat map. Generate a redesign of the hero section optimized specifically to maximize the click-through rate on the primary ‘[CTA_Button_Label]’ button. The new design should use the heat map insights to eliminate distractions and focus user attention directly on the main conversion goal.
+
+**Inputs:**
+- original_screenshot (Original Screenshot): Upload original...
+- heatmap_image (Heatmap Image): Upload generated heatmap...
+- CTA_Button_Label (Primary CTA Label): Get Started
+
 ## Daily Life & Translation
 *Translations and localization.*
 
