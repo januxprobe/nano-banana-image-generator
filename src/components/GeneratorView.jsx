@@ -10,7 +10,9 @@ const GeneratorView = ({ item, isPro }) => {
     const [showPrompt, setShowPrompt] = useState(false);
     const [copied, setCopied] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
+    const [explanationText, setExplanationText] = useState('');
     const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+    const [isGeneratingExplanation, setIsGeneratingExplanation] = useState(false);
 
     // Reset form when item changes
     useEffect(() => {
@@ -24,7 +26,9 @@ const GeneratorView = ({ item, isPro }) => {
         setShowPrompt(false);
         setCopied(false);
         setImageUrl('');
+        setExplanationText('');
         setIsGeneratingImage(false);
+        setIsGeneratingExplanation(false);
     }, [item]);
 
     const handleInputChange = (name, value) => {
@@ -80,9 +84,11 @@ const GeneratorView = ({ item, isPro }) => {
 
 
     const generateImage = async () => {
-        const prompt = generatePrompt();
+        let prompt = generatePrompt();
         setIsGeneratingImage(true);
         setImageUrl('');
+        setExplanationText('');
+        setIsGeneratingExplanation(false);
 
         try {
             const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -91,146 +97,162 @@ const GeneratorView = ({ item, isPro }) => {
             }
 
             const genAI = new GoogleGenerativeAI(apiKey);
+            let analysisText = '';
 
-            // Select model based on Pro mode
-            const modelName = isPro ? "gemini-3-pro-image-preview" : "gemini-2.5-flash-image";
-            console.log(`Using model: ${modelName}`);
+            // --- 1. Sequential Explanation Generation (Logic First) ---
+            if (item.explanationTemplate) {
+                setIsGeneratingExplanation(true);
+                try {
+                    console.log("Starting analysis...");
+                    let explanationPrompt = item.explanationTemplate;
+                    Object.entries(formValues).forEach(([key, value]) => {
+                        const regex = new RegExp(`\\[${key}\\]`, 'g');
+                        explanationPrompt = explanationPrompt.replace(regex, value || `[${key}]`);
+                    });
 
-            // Configure safety settings to be less restrictive for creative tasks
-            // Configure safety settings to be less restrictive for creative tasks
-            // We use the ENUMS to ensure correct mapping
-            const safetySettings = [
-                {
-                    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-                    threshold: HarmBlockThreshold.BLOCK_NONE,
-                },
-                {
-                    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-                    threshold: HarmBlockThreshold.BLOCK_NONE,
-                },
-                {
-                    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-                    threshold: HarmBlockThreshold.BLOCK_NONE,
-                },
-                {
-                    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-                    threshold: HarmBlockThreshold.BLOCK_NONE,
-                },
-            ];
+                    // Use Gemini 2.0 Flash for analysis
+                    const textModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-            const model = genAI.getGenerativeModel({
-                model: modelName,
-                safetySettings
-                // systemInstruction removed as it may conflict with image generation on some models
-            });
-
-            // Prepare prompt parts
-            // We append a disclaimer to help avoid false-positive safety blocks on "real people"
-            const effectivePrompt = prompt + " . ensure the output is high quality. these are fictional characters for a creative project.";
-            const promptParts = [
-                { text: effectivePrompt }
-            ];
-
-            // Add uploaded images if any
-            Object.values(uploadedFiles).forEach(file => {
-                promptParts.push({
-                    inlineData: {
-                        data: file.data,
-                        mimeType: file.mimeType
-                    }
-                });
-            });
-
-            // Generate content with the prompt
-            console.log("Sending prompt with parts count:", promptParts.length);
-            console.log("Safety Settings:", JSON.stringify(safetySettings, null, 2));
-
-            // Helper function to handle response parsing
-            const handleResponse = (result) => {
-                console.log("Full API result:", result);
-                const response = result.response;
-                console.log("Response object:", response);
-
-                // Check for block reason in promptFeedback
-                if (response.promptFeedback && response.promptFeedback.blockReason) {
-                    const reason = response.promptFeedback.blockReason;
-                    console.error("Prompt blocked:", response.promptFeedback);
-                    throw new Error(`Prompt was blocked by the model. Reason: ${reason}.`);
-                }
-
-                if (response.candidates && response.candidates[0]) {
-                    const candidate = response.candidates[0];
-                    console.log("Candidate:", candidate);
-
-                    if (candidate.finishReason === 'SAFETY') {
-                        const textResponse = candidate.content?.parts?.[0]?.text || "Safety filters triggered";
-                        throw new Error(`Image generation blocked by safety filters: ${textResponse}`);
-                    }
-
-                    if (candidate.finishReason === 'OTHER') {
-                        throw new Error("BLOCK_OTHER"); // Signal for retry
-                    }
-
-                    if (candidate.content && candidate.content.parts) {
-                        for (const part of candidate.content.parts) {
-                            if (part.inlineData && part.inlineData.mimeType && part.inlineData.mimeType.startsWith('image/')) {
-                                const base64Data = part.inlineData.data;
-                                const mimeType = part.inlineData.mimeType;
-                                const dataUrl = `data:${mimeType};base64,${base64Data}`;
-                                setImageUrl(dataUrl);
-                                setIsGeneratingImage(false);
-                                return true; // Success
-                            }
-                        }
-                    }
-                    throw new Error(`No image found in response. FinishReason: ${candidate.finishReason}.`);
-                }
-
-                if (response.promptFeedback) {
-                    throw new Error(`No candidates returned. Prompt Feedback: ${JSON.stringify(response.promptFeedback)}`);
-                }
-                throw new Error("No candidates returned by the model.");
-            };
-
-            try {
-                const result = await model.generateContent(promptParts);
-                handleResponse(result);
-            } catch (error) {
-                if (error.message === "BLOCK_OTHER") {
-                    console.log("Caught BLOCK_OTHER, retrying with safer prompt...");
-                    // Retry with a more "safe" prompt that emphasizes fiction
-                    const safePrompt = prompt + " . (fictional character design, cgi, digital art, no real people, fantasy)";
-                    const safePromptParts = [
-                        { text: safePrompt }
-                    ];
-                    // Re-add images
+                    const textParts = [{ text: explanationPrompt }];
                     Object.values(uploadedFiles).forEach(file => {
-                        safePromptParts.push({
-                            inlineData: {
-                                data: file.data,
-                                mimeType: file.mimeType
-                            }
+                        textParts.push({
+                            inlineData: { data: file.data, mimeType: file.mimeType }
                         });
                     });
 
-                    const retryResult = await model.generateContent(safePromptParts);
-                    handleResponse(retryResult);
-                } else {
-                    throw error;
+                    const result = await textModel.generateContent(textParts);
+                    const response = await result.response;
+                    analysisText = response.text();
+
+                    setExplanationText(analysisText);
+                    console.log("Analysis complete:", analysisText.substring(0, 50) + "...");
+
+                } catch (err) {
+                    console.error("Explanation generation failed:", err);
+                    setExplanationText("Failed to generate analysis. " + err.message);
+                    // Continue to image generation even if analysis fails
+                } finally {
+                    setIsGeneratingExplanation(false);
                 }
             }
 
-        } catch (error) {
-            console.error("Error generating image:", error);
-            console.error("Error stack:", error.stack);
+            // --- 2. Image Generation (Guided by Analysis) ---
+            try {
+                // Select model based on Pro mode
+                const modelName = isPro ? "gemini-3-pro-image-preview" : "gemini-2.5-flash-image";
+                console.log(`Using image model: ${modelName}`);
 
-            let userMessage = error.message;
-            if (error.message === "BLOCK_OTHER") {
-                userMessage = "Image generation failed. The model refused the request (Reason: OTHER). This often happens with real people's faces or specific forbidden content, even with safety settings off. Try removing face close-ups or using different reference images.";
+                const safetySettings = [
+                    { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+                    { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
+                    { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
+                    { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+                ];
+
+                const model = genAI.getGenerativeModel({ model: modelName, safetySettings });
+
+                // ENHANCE PROMPT WITH ANALYSIS
+                if (analysisText) {
+                    prompt += ` . Use the following analysis to guide the heatmap generation: ${analysisText}`;
+                }
+                const effectivePrompt = prompt + " . ensure the output is high quality. these are fictional characters for a creative project.";
+
+                const promptParts = [{ text: effectivePrompt }];
+
+                // Add uploaded images if any to the image model too
+                Object.values(uploadedFiles).forEach(file => {
+                    promptParts.push({
+                        inlineData: { data: file.data, mimeType: file.mimeType }
+                    });
+                });
+
+                console.log("Sending prompt with parts count:", promptParts.length);
+
+                const handleResponse = (result) => {
+                    const response = result.response;
+                    if (response.promptFeedback && response.promptFeedback.blockReason) {
+                        throw new Error(`Prompt blocked: ${response.promptFeedback.blockReason}`);
+                    }
+                    if (response.candidates && response.candidates[0]) {
+                        const candidate = response.candidates[0];
+                        if (candidate.finishReason === 'SAFETY') {
+                            throw new Error(`Blocked by safety filters`);
+                        }
+                        if (candidate.finishReason === 'OTHER') {
+                            throw new Error("BLOCK_OTHER");
+                        }
+                        if (candidate.content && candidate.content.parts) {
+                            for (const part of candidate.content.parts) {
+                                if (part.inlineData && part.inlineData.mimeType && part.inlineData.mimeType.startsWith('image/')) {
+                                    const base64Data = part.inlineData.data;
+                                    const mimeType = part.inlineData.mimeType;
+                                    const dataUrl = `data:${mimeType};base64,${base64Data}`;
+                                    setImageUrl(dataUrl);
+                                    setIsGeneratingImage(false);
+                                    return true;
+                                }
+                            }
+                        }
+                        throw new Error(`No image found. FinishReason: ${candidate.finishReason}`);
+                    }
+                    throw new Error("No candidates returned.");
+                };
+
+                try {
+                    const result = await model.generateContent(promptParts);
+                    handleResponse(result);
+                } catch (error) {
+                    console.log("Image Gen Error detected:", error.message);
+
+                    const isBlockingError =
+                        error.message.includes("BLOCK_OTHER") ||
+                        error.message.includes("Safety") ||
+                        error.message.includes("blocked") ||
+                        error.message.includes("filters") ||
+                        error.message.includes("FinishReason");
+
+                    if (isBlockingError) {
+                        console.log("Caught Blocking Error, retrying with safer prompt...");
+                        const safePrompt = prompt + " . (fictional character design, cgi, digital art, no real people)";
+                        const safePromptParts = [{ text: safePrompt }];
+                        Object.values(uploadedFiles).forEach(file => {
+                            safePromptParts.push({ inlineData: { data: file.data, mimeType: file.mimeType } });
+                        });
+
+                        try {
+                            // Retry 1: Same model, safe prompt
+                            const retryResult = await model.generateContent(safePromptParts);
+                            handleResponse(retryResult);
+                        } catch (retryError) {
+                            console.log("Retry 1 failed, attempting fallback to Flash Image model...");
+                            // Retry 2: Flash model (often more permissive), safe prompt
+                            try {
+                                const fallbackModel = genAI.getGenerativeModel({
+                                    model: "gemini-2.5-flash-image",
+                                    safetySettings
+                                });
+                                const finalRetryResult = await fallbackModel.generateContent(safePromptParts);
+                                handleResponse(finalRetryResult);
+                            } catch (finalError) {
+                                console.error("All retries failed.");
+                                throw finalError; // Throw the final error to display alert
+                            }
+                        }
+                    } else {
+                        throw error;
+                    }
+                }
+
+            } catch (error) {
+                console.error("Error generating image:", error);
+                alert("Failed to generate image: " + error.message);
+                setIsGeneratingImage(false);
             }
 
-            alert("Failed to generate image: " + userMessage);
+        } catch (error) {
+            console.error("GenAI Init Error:", error);
             setIsGeneratingImage(false);
+            setIsGeneratingExplanation(false);
         }
     };
 
@@ -336,6 +358,20 @@ const GeneratorView = ({ item, isPro }) => {
                                 />
                             )}
                         </div>
+                    </div>
+                )}
+
+                {/* Explanation Section */}
+                {(explanationText || isGeneratingExplanation) && (
+                    <div className="explanation-section" style={{ marginTop: '20px', padding: '15px', background: '#252529', borderRadius: '12px', border: '1px solid #333' }}>
+                        <h3>Design Analysis (Gemini 2.0 Flash)</h3>
+                        {isGeneratingExplanation ? (
+                            <p style={{ color: '#888', fontStyle: 'italic' }}>Analyzing design patterns...</p>
+                        ) : (
+                            <div className="explanation-text" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', color: '#e0e0e0' }}>
+                                {explanationText}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

@@ -62,7 +62,7 @@ export const categories = [
         id: 'business-photo',
         title: 'Business Photo (Silicon Valley)',
         description: 'Professional studio headshots.',
-        template: "Keep the facial features of the person in the uploaded image exactly consistent. Dress them in [outfit], similar to the reference image. Background : Place the subject against [background]. The background should have a subtle gradient, slightly lighter behind the subject and darker towards the edges (vignette effect). There should be no other objects. Photography Style : Shot on a Sony A7III with an 85mm f/1.4 lens, creating a flattering portrait compression. Lighting : Use a classic three-point lighting setup. The main key light should create soft, defining shadows on the face. A subtle rim light should separate the subject's shoulders and hair from the dark background. Crucial Details : Render natural skin texture with visible pores, not an airbrushed look. Add natural catchlights to the eyes. The fabric of the suit should show a subtle wool texture. Final image should be an ultra-realistic, 8k professional headshot.",
+        template: "Keep the facial features of the person in the uploaded image exactly consistent. Dress them in [outfit], similar to the reference image. Background : Place the subject against [background]. The background should have a subtle gradient, slightly lighter behind the subject and darker towards the edges (vignette effect). There should be no other objects. Photography Style : Shot on a Sony A7III with an 85mm f/1.4 lens, creating a flattering portrait compression. Lighting : Use a classic three-point lighting setup. The main key light should create soft, defining shadows on the face. A subtle rim light should separate the subject's shoulders and hair from the dark background. Crucial Details : Render natural skin texture with visible pores, not an airbrushed look. Add natural catchlights to the eyes. The fabric of the suit should show a subtle wool texture. Final image should be an ultra-realistic, 8k professional headshot. (fictional character, cgi, digital art)",
         inputs: [
           { name: 'reference_image', label: 'Reference Photo', type: 'file', placeholder: 'Upload a clear headshot...' },
           { name: 'outfit', label: 'Outfit', type: 'text', placeholder: 'a professional navy blue business suit with a white shirt' },
@@ -419,6 +419,7 @@ export const categories = [
         title: 'Predictive Attention Heat Map',
         description: 'Visualizes user attention and CTA focus.',
         template: "Generate a predictive attention heat map on top of this landing page. The audit should highlight areas of high visual engagement and identify any elements that are distracting focus from the primary [CTA_Button_Label] CTA.",
+        explanationTemplate: "Analyze the design of this landing page screenshot. Identify 3 specific elements that are distracting from the [CTA_Button_Label] CTA and propose 3 design improvements to fix them. Be concise and actionable.",
         inputs: [
           { name: 'landing_page_screenshot', label: 'Landing Page Screenshot', type: 'file', placeholder: 'Upload screenshot...' },
           { name: 'CTA_Button_Label', label: 'Primary CTA Label', type: 'text', placeholder: 'Get Started' }
