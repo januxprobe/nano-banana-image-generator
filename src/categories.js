@@ -291,6 +291,16 @@ export const categories = [
           { name: 'subject_1', label: 'Main Subject', type: 'text', placeholder: 'fresh strawberries' },
           { name: 'subject_2', label: 'Floating Element', type: 'text', placeholder: 'water droplets' }
         ]
+      },
+      {
+        id: 'cinematic-glass-capsule',
+        title: 'Cinematic Glass Capsule',
+        description: 'Premium 3D product showcase in a transparent glass capsule.',
+        template: "A cinematic 3D product showcase inside a transparent glass capsule. The [product] stands on a glossy pedestal colored to match [brand_name]’s identity. Background softly blends with the product’s palette. Soft, directional lighting highlights the texture and form. The brand logo appears illuminated on the base. Style: futuristic, luxurious, high-detail.",
+        inputs: [
+          { name: 'product', label: 'Product', type: 'text', placeholder: 'Perfume Bottle' },
+          { name: 'brand_name', label: 'Brand Name', type: 'text', placeholder: 'Chanel' }
+        ]
       }
     ]
   },
