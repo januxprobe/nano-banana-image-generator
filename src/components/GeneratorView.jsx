@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
+import ReactMarkdown from 'react-markdown';
 import PeelingBananaLoader from './PeelingBananaLoader';
 import './GeneratorView.css';
 
@@ -359,8 +360,8 @@ const GeneratorView = ({ item, isPro }) => {
                         {isGeneratingExplanation ? (
                             <p style={{ color: '#888', fontStyle: 'italic' }}>Analyzing design patterns...</p>
                         ) : (
-                            <div className="explanation-text" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', color: '#e0e0e0' }}>
-                                {explanationText}
+                            <div className="explanation-text">
+                                <ReactMarkdown>{explanationText}</ReactMarkdown>
                             </div>
                         )}
                     </div>
