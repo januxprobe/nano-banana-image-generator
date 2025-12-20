@@ -185,6 +185,16 @@ export const categories = [
           { name: 'components', label: 'Components', type: 'textarea', placeholder: 'The Sun, a green Plant, Water (H2O)...' },
           { name: 'language', label: 'Language', type: 'text', placeholder: 'English' }
         ]
+      },
+      {
+        id: 'pdf-whiteboard',
+        title: 'PDF to Whiteboard',
+        description: 'Visualizes PDF concepts as a professor-style whiteboard sketch.',
+        template: "Create a professor-style whiteboard image. Include diagrams, arrows, boxes, and short captions that explain the core ideas visually. Use color highlights to make concepts easy to follow.",
+        explanationTemplate: "Analyze the attached PDF file. Extract the core ideas, key concepts, and relationships. Provide a detailed visual description of how these concepts should be drawn on a whiteboard, including specific diagrams, arrows connecting ideas, and text for captions.",
+        inputs: [
+          { name: 'pdf', label: 'Upload PDF', type: 'file', accept: 'application/pdf', placeholder: 'Upload a PDF...' }
+        ]
       }
     ]
   },

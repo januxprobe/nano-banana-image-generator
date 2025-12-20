@@ -152,18 +152,23 @@ const GeneratorView = ({ item, isPro }) => {
                 const model = genAI.getGenerativeModel({ model: modelName, safetySettings });
 
                 // ENHANCE PROMPT WITH ANALYSIS
+                // ENHANCE PROMPT WITH ANALYSIS
                 if (analysisText) {
-                    prompt += ` . Use the following analysis to guide the heatmap generation: ${analysisText}`;
+                    prompt += ` . Use the following analysis to guide the generation: ${analysisText}`;
                 }
                 const effectivePrompt = prompt + " . ensure the output is high quality. these are fictional characters for a creative project.";
 
                 const promptParts = [{ text: effectivePrompt }];
 
                 // Add uploaded images if any to the image model too
+                // FILTER: Only add IMAGE files to the image generation model. 
+                // PDFs/Text files should only be used in the Analysis phase (step 1).
                 Object.values(uploadedFiles).forEach(file => {
-                    promptParts.push({
-                        inlineData: { data: file.data, mimeType: file.mimeType }
-                    });
+                    if (file.mimeType.startsWith('image/')) {
+                        promptParts.push({
+                            inlineData: { data: file.data, mimeType: file.mimeType }
+                        });
+                    }
                 });
 
                 console.log("Sending prompt with parts count:", promptParts.length);
@@ -215,8 +220,11 @@ const GeneratorView = ({ item, isPro }) => {
                         console.log("Caught Blocking Error, retrying with safer prompt...");
                         const safePrompt = prompt + " . (fictional character design, cgi, digital art, no real people)";
                         const safePromptParts = [{ text: safePrompt }];
+                        // Same filter for retry
                         Object.values(uploadedFiles).forEach(file => {
-                            safePromptParts.push({ inlineData: { data: file.data, mimeType: file.mimeType } });
+                            if (file.mimeType.startsWith('image/')) {
+                                safePromptParts.push({ inlineData: { data: file.data, mimeType: file.mimeType } });
+                            }
                         });
 
                         try {
@@ -286,7 +294,7 @@ const GeneratorView = ({ item, isPro }) => {
                                 <input
                                     type="file"
                                     id={input.name}
-                                    accept="image/*"
+                                    accept={input.accept || "image/*"}
                                     onChange={(e) => handleFileChange(input.name, e.target.files[0])}
                                 />
                             ) : input.type === 'combobox' ? (
@@ -344,6 +352,20 @@ const GeneratorView = ({ item, isPro }) => {
                     </div>
                 )}
 
+                {/* Explanation Section */}
+                {(explanationText || isGeneratingExplanation) && (
+                    <div className="explanation-section" style={{ marginTop: '20px', marginBottom: '20px', padding: '15px', background: '#252529', borderRadius: '12px', border: '1px solid #333' }}>
+                        <h3>Design Analysis (Gemini 2.0 Flash)</h3>
+                        {isGeneratingExplanation ? (
+                            <p style={{ color: '#888', fontStyle: 'italic' }}>Analyzing design patterns...</p>
+                        ) : (
+                            <div className="explanation-text" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', color: '#e0e0e0' }}>
+                                {explanationText}
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 {(imageUrl || isGeneratingImage) && (
                     <div className="image-section">
                         <h3>Generated Preview</h3>
@@ -358,20 +380,6 @@ const GeneratorView = ({ item, isPro }) => {
                                 />
                             )}
                         </div>
-                    </div>
-                )}
-
-                {/* Explanation Section */}
-                {(explanationText || isGeneratingExplanation) && (
-                    <div className="explanation-section" style={{ marginTop: '20px', padding: '15px', background: '#252529', borderRadius: '12px', border: '1px solid #333' }}>
-                        <h3>Design Analysis (Gemini 2.0 Flash)</h3>
-                        {isGeneratingExplanation ? (
-                            <p style={{ color: '#888', fontStyle: 'italic' }}>Analyzing design patterns...</p>
-                        ) : (
-                            <div className="explanation-text" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', color: '#e0e0e0' }}>
-                                {explanationText}
-                            </div>
-                        )}
                     </div>
                 )}
             </div>
